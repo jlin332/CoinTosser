@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  AppRegistry, Text, StyleSheet, View, Image, Animated
+  AppRegistry, Text, StyleSheet, View, Image, Animated, TouchableHighlight
 } from 'react-native';
 
 class DecisionAnimation extends Component {
@@ -11,8 +11,7 @@ class DecisionAnimation extends Component {
     Animated.timing(                  // Animate over time
       this.state.fadeAnim,            // The animated value to drive
       {
-        toValue: 1,                   // Animate to opacity: 1 (opaque)
-        duration: 5000,              // Make it take a while
+        toValue: 1, duration: 5000,
       }
     ).start();                        // Starts the animation
   }
@@ -31,8 +30,16 @@ class DecisionAnimation extends Component {
 }
 
 export default class StartPage extends Component {
+
+  static navigationOptions = {
+    headerLeft: null,
+    header: null,
+  };
+
   render() {
+    const { navigate } = this.props.navigation;
     return (
+      <TouchableHighlight onPress = { () => navigate('Main') } >
       <Image source={require('./img/start_black_img.jpg')} style={styles.container}>
           <View>
             <Text style={styles.titleText}> CoinTosser </Text>
@@ -43,12 +50,14 @@ export default class StartPage extends Component {
             <Text style={styles.author}> Created by John Lin </Text>
           </View>
       </Image>
+      </TouchableHighlight>
     );
   }
 }
 
 const styles = StyleSheet.create({
   container: {
+    marginTop: 20,
     width: undefined,
     height: undefined,
     backgroundColor: 'transparent',

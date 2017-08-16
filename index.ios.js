@@ -1,19 +1,14 @@
 import React, { Component } from 'react';
 import {
-  AppRegistry,
-  Text,
-  View
+  AppRegistry, Text, View,
 } from 'react-native';
 import StartPage from './app/components/startpage/StartPage';
+import CoinPage from './app/components/coinpage/CoinPage';
+import { StackNavigator } from 'react-navigation';
 
-export default class CoinTosser extends Component {
-  render() {
-    return (
-      <View>
-        <StartPage />
-      </View>
-    );
-  }
-}
+const CoinTosser = StackNavigator({
+  Home: { screen: StartPage },
+  Main: { screen: CoinPage },
+});
 
 AppRegistry.registerComponent('CoinTosser', () => CoinTosser);
