@@ -6,20 +6,59 @@ import Button from 'react-native-button';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 export default class CoinPage extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {flipping : false, picStatus: true, percentH: 0, percentT: 0, countH: 0, countT: 0, interval:0}
+  }
+
   flip() {
-    Alert.alert('Flipped', 'Make the Flip action')
+    this.setState({flipping: !this.state.flipping}, function() {
+      if(this.state.flipping) {
+        this.state.interval = setInterval(() => {
+          this.setState(prevState => {return {picStatus: !prevState.picStatus};});
+        }, 50 + Math.random() * 100);
+      } else {
+        clearInterval(this.state.interval);
+        if(this.state.picStatus == true) {
+          this.updateHead();
+        } else {
+          this.updateTail();
+        }
+      }
+    })
+  }
+  updateHead() {
+    this.setState({ countH: this.state.countH + 1}, function() {
+      this.setState({
+        percentH: (100 * this.state.countH/(this.state.countH + this.state.countT)).toFixed(2),
+        percentT: (100 * this.state.countT/(this.state.countH + this.state.countT)).toFixed(2)
+      })
+    })
+  }
+  updateTail() {
+    this.setState({ countT: this.state.countT + 1}, function() {
+      this.setState({
+        percentH: (100 * this.state.countH/(this.state.countH + this.state.countT)).toFixed(2),
+        percentT: (100 * this.state.countT/(this.state.countH + this.state.countT)).toFixed(2)
+      })
+    })
   }
   popupInfo() {
-    Alert.alert('Info', 'Information about this app')
+    Alert.alert('Info', 'Coin Tossing App\n Created in React-Native\n By John Lin Summer 2017')
   }
+
   reset() {
-    Alert.alert('Reset', 'reset method')
+    this.setState({percentH: 0, percentT: 0, countH: 0, countT: 0})
   }
+
   static navigationOptions = {
     headerLeft: null,
     header: null,
   };
+
   render() {
+    var img = this.state.picStatus ? require('./img/us-quarter-front.jpg') : require('./img/us-quarter-back.jpg');
+    console.log(this.state.flipping);
     return (
       <Image source={require('./img/start_black_img.jpg')} style={styles.container}>
           <View style={styles.green}>
@@ -27,7 +66,7 @@ export default class CoinPage extends Component {
               <Icon name='info' size={30} onPress={() => this.popupInfo()} />
             </View>
             <View style= {{alignItems: 'center'}}>
-              <Image source={require('./img/us-quarter-front.jpg')} />
+              <Image source={img} />
               <Button containerStyle={styles.flipBtn} style={{color:'#000000', margin: 10}} onPress={() => this.flip()}> Flip/Catch </Button>
             </View>
             <View style={styles.rowStyle}>
@@ -36,14 +75,14 @@ export default class CoinPage extends Component {
               <Text style={styles.header}> Tail </Text>
             </View>
             <View style={styles.rowStyle}>
-              <Text style={styles.stat}> 0 </Text>
+              <Text style={styles.stat}>{this.state.countH}</Text>
               <Text style={{textAlign: 'center', flex: 1}}> Count </Text>
-              <Text style={styles.stat}> 0 </Text>
+              <Text style={styles.stat}> {this.state.countT} </Text>
             </View>
             <View style={styles.rowStyle}>
-            <Text style={styles.stat}> 0 </Text>
+            <Text style={styles.stat}> {this.state.percentH} </Text>
             <Text style={{textAlign: 'center', flex: 1}}> Percent </Text>
-            <Text style={styles.stat}> 0 </Text>
+            <Text style={styles.stat}> {this.state.percentT} </Text>
             </View>
             <View style = {{alignItems:'center', marginBottom: 10}}>
               <Button containerStyle={styles.flipBtn} style={{color:'#000000', margin: 10}} onPress={() => this.reset()}> Reset </Button>
